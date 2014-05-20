@@ -4,12 +4,12 @@ class Comment
 {
 	private $data = array();
 	
-	public function __construct($row)
+	public function __construct($row = null)
 	{
 		/*
 		/	Конструктор
 		*/
-		
+
 		$this->data = $row;
 	}
 	
@@ -56,7 +56,7 @@ class Comment
 		';
 	}
 	
-	public static function validate(&$arr)
+	public static function validate(&$arr, &$db)
 	{
 		/*
 		/	Данный метод используется для проверки данных отправляемых через AJAX.
@@ -106,7 +106,7 @@ class Comment
 		// Если данные введены правильно, подчищаем данные и копируем их в $arr:
 		
 		foreach($data as $k=>$v){
-			$arr[$k] = mysql_real_escape_string($v);
+			$arr[$k] = mysqli_real_escape_string($db, $v);
 		}
 		
 		// email дожен быть в нижнем регистре:
@@ -139,4 +139,3 @@ class Comment
 
 }
 
-?>

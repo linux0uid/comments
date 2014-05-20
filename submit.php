@@ -1,10 +1,11 @@
 <?php
+define (PATH_ROOT, dirname(__FILE__));
 
 // Сообщение об ошибке:
 error_reporting(E_ALL^E_NOTICE);
 
-include "connect.php";
-include "comment.class.php";
+include_once implode(DIRECTORY_SEPARATOR, array(PATH_ROOT, "include", "comment.class.php"));
+include_once implode(DIRECTORY_SEPARATOR, array(PATH_ROOT, "include", "mysql.class.php"));
 
 /*
 /	Данный массив будет наполняться либо данными,
@@ -12,23 +13,26 @@ include "comment.class.php";
 /	либо сообщениями об ошибке.
 /*/
 
+    $mysql = new MySQL;
+    $db = $mysql->db;
 $arr = array();
-$validates = Comment::validate($arr);
+$validates = Comment::validate($arr, $db);
 
 if($validates)
 {
 	/* Все в порядке, вставляем данные в базу: */
 	
-	mysql_query("	INSERT INTO comments(name,url,email,body)
+	$db->query("	INSERT INTO comments(name,url,email,body)
 					VALUES (
 						'".$arr['name']."',
 						'".$arr['url']."',
 						'".$arr['email']."',
 						'".$arr['body']."'
 					)");
-	
+    unset($mysql);
+
 	$arr['dt'] = date('r',time());
-	$arr['id'] = mysql_insert_id();
+	$arr['id'] = mysqli_insert_id();
 	
 	/*
 	/	Данные в $arr подготовлены для запроса mysql,
@@ -51,4 +55,3 @@ else
 	echo '{"status":0,"errors":'.json_encode($arr).'}';
 }
 
-?>
