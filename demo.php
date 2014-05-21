@@ -4,7 +4,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Система комментариев для сайта на PHP | Демонстрация для сайта RUDEBOX</title>
 
-<link rel="stylesheet" type="text/css" href="styles.css" />
 
 </head>
 
@@ -18,8 +17,6 @@
 
 </div>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script type="text/javascript" src="script.js"></script>
 
 </body>
 </html>

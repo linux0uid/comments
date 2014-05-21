@@ -1,6 +1,7 @@
 <?php
 
-require_once  PATH_ROOT . DIRECTORY_SEPARATOR . 'config.php';
+include_once PATH_ROOT . DIRECTORY_SEPARATOR . 'config.php';
+//include_once implode(DIRECTORY_SEPARATOR, array($_SERVER['DOCUMENT_ROOT'], "comments", "config.php"));
 
 class MySQL
 {
