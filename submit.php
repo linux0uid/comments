@@ -4,6 +4,7 @@ define (PATH_ROOT, dirname(__FILE__));
 // Сообщение об ошибке:
 error_reporting(E_ALL^E_NOTICE);
 
+include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
 include_once implode(DIRECTORY_SEPARATOR, array(PATH_ROOT, "include", "comment.class.php"));
 include_once implode(DIRECTORY_SEPARATOR, array(PATH_ROOT, "include", "mysql.class.php"));
 
@@ -13,8 +14,9 @@ include_once implode(DIRECTORY_SEPARATOR, array(PATH_ROOT, "include", "mysql.cla
 /	либо сообщениями об ошибке.
 /*/
 
-    $mysql = new MySQL;
-    $db = $mysql->db;
+$mysql = new MySQL;
+$db = $mysql->db;
+
 $arr = array();
 $validates = Comment::validate($arr, $db);
 
@@ -22,18 +24,18 @@ if($validates)
 {
 	/* Все в порядке, вставляем данные в базу: */
 	
-	$db->query("	INSERT INTO comments(name,url,email,body)
+	$db->query("	INSERT INTO ". DB_TABLE ."(name,url,email,body)
 					VALUES (
 						'".$arr['name']."',
 						'".$arr['url']."',
 						'".$arr['email']."',
 						'".$arr['body']."'
 					)");
-    unset($mysql);
 
 	$arr['dt'] = date('r',time());
 	$arr['id'] = mysqli_insert_id();
 	
+    unset($mysql);
 	/*
 	/	Данные в $arr подготовлены для запроса mysql,
 	/	но нам нужно делать вывод на экран, поэтому 

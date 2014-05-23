@@ -1,14 +1,14 @@
 <?php
-global $db_host, $db_database, $db_user, $db_pass, $db_table;
 
 /* Конфигурация базы данных */
 
-$db_host		= 'localhost';
-$db_user		= 'comments.dev';
-$db_pass		= 'Rydn9VPFeJMGGxwa';
-$db_database	= 'comments.dev'; 
-$db_table       = 'comments';
+define ('DB_HOST',     'localhost');
+define ('DB_USER',     'comments.dev');
+define ('DB_PASS',     'Rydn9VPFeJMGGxwa');
+define ('DB_NAME', 'comments.dev'); 
+define ('DB_TABLE',    'comments');
 
 /* Конец секции */
 
 
+define (PATH_ROOT, dirname(__FILE__));
