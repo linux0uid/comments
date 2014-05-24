@@ -1,5 +1,4 @@
 <?php
-//define (ROOT_DIR, substr(strrchr(dirname(__FILE__), '/'), 1));
 define (ROOT_DIR, substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_ROOT']))+1));
 
 // Сообщение об ошибке:
@@ -19,7 +18,9 @@ $comments = array();
 $mysql = new MySQL;
 $db = $mysql->db;
 
-$result = $db->query("SELECT * FROM ". DB_TABLE ." ORDER BY id ASC");
+$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+$result = $db->query("SELECT * FROM ". DB_TABLE ." WHERE `url`='". $url ."' ORDER BY id ASC");
 
 while($row = mysqli_fetch_assoc($result))
 {
