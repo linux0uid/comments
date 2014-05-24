@@ -7,6 +7,9 @@
 foreach($comments as $c){
 	echo $c->markup();
 }
+
+$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+$hash = md5($url . URL_SOLL);
 ?>
 
     <link rel="stylesheet" type="text/css" href="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/styles.css"; ?>" />
@@ -21,12 +24,11 @@ foreach($comments as $c){
             <label for="email">Email</label>
             <input type="text" name="email" id="email" />
             
-            <label for="url">Вебсайт (не обязательно)</label>
-            <input type="text" name="url" id="url" />
-            
             <label for="body">Содержание комментария</label>
             <textarea name="body" id="body" cols="20" rows="5"></textarea>
             
+            <input type="hidden" name="url" value="<?php echo $url; ?>" />
+            <input type="hidden" name="hash" value="<?php echo $hash; ?>" />
             <input type="submit" id="submit" value="Отправить" />
         </div>
     </form>

@@ -25,20 +25,20 @@ class Comment
 		$link_open = '';
 		$link_close = '';
 		
-		if($d['url']){
+		//if($d['url']){
 			
-			// Если был введн URL при добавлении комментария,
-			// определяем открывающий и закрывающий теги ссылки
+			//// Если был введн URL при добавлении комментария,
+			//// определяем открывающий и закрывающий теги ссылки
 			
-			$link_open = '<a href="'.$d['url'].'">';
-			$link_close =  '</a>';
-		}
+			//$link_open = '<a href="'.$d['url'].'">';
+			//$link_close =  '</a>';
+		//}
 		
 		// Преобразуем время в формат UNIX:
 		$d['dt'] = strtotime($d['dt']);
 		
 		// Нужно для установки изображения по умолчанию:
-		$url = 'http://'.dirname($_SERVER['SERVER_NAME'].$_SERVER["REQUEST_URI"]).'/img/default_avatar.gif';
+		$url = 'http://'.dirname($_SERVER['SERVER_NAME'] . '/' . ROOT_DIR) . '/img/default_avatar.gif';
 		
 		return '
 		
@@ -76,12 +76,15 @@ class Comment
 		}
 		
 		if(!($data['url'] = filter_input(INPUT_POST,'url',FILTER_VALIDATE_URL)))
-		{
-			// Если в поле URL был введн неправильный URL,
-			// действуем так, как будто URL не был введен:
-			
-			$url = '';
-		}
+		{ 
+			$errors['url'] = 'Пожалуйста, введите правильный url.';
+        } elseif(strpos($data['url'], 'http://'.$_SERVER['SERVER_NAME']) !== 0) {
+			$errors['url'] = 'Пожалуйста, проверте правильность домена.';
+        }
+        
+        if(md5($data['url']. URL_SOLL) != $_POST['hash']) {
+			$errors['hash'] = 'Не верный хеш.';
+        }
 		
 		// Используем фильтр с возвратной функцией:
 		
