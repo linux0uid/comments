@@ -6,7 +6,7 @@ include_once implode(DIRECTORY_SEPARATOR, array(PATH_ROOT, "include", "mysql.cla
 $mysql = new MySQL;
 $db = $mysql->db;
 
-$query =  "CREATE TABLE IF NOT EXISTS `comments` (" .
+$query =  "CREATE TABLE IF NOT EXISTS `". DB_TABLE ."` (" .
             "`id` int(10) unsigned NOT NULL auto_increment," .
             "`date` timestamp NOT NULL default CURRENT_TIMESTAMP," .
             "`name` varchar(128) collate utf8_unicode_ci NOT NULL default ''," .
@@ -14,6 +14,8 @@ $query =  "CREATE TABLE IF NOT EXISTS `comments` (" .
             "`email` varchar(255) collate utf8_unicode_ci NOT NULL default ''," .
             "`body` text collate utf8_unicode_ci NOT NULL," .
             "`public` BOOLEAN NOT NULL DEFAULT FALSE," .
+            "`ip` char(15) NOT NULL default ''," .
+            "`uuid` binary(16) NOT NULL," .
             "PRIMARY KEY  (`id`)" .
           ") ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;";
 

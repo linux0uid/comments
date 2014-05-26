@@ -18,26 +18,17 @@ $mysql = new MySQL;
 $db = $mysql->db;
 
 $arr = array();
-$validates = Comment::validate($arr, $db);
+$validates = Comment::validateMore($arr, $db);
 
-if($validates)
-{
+if($validates) {
 	/* Все в порядке, вставляем данные в базу: */
 	
-	$db->query("	INSERT INTO ". DB_TABLE ."(name,url,email,body,uuid,ip)
-					VALUES (
-						'".$arr['name']."',
-						'".$arr['url']."',
-						'".$arr['email']."',
-						'".$arr['body']."',
-						UNHEX('".$arr['uuid']."'),
-						'".$arr['ip']."'
-					)");
+    $result = $db->query("SELECT `name`, `body`, `email`, `date` FROM ". DB_TABLE ." WHERE `url`='". $arr['url'] ."' AND (`public` OR `uuid`=UNHEX('". $arr['uuid'] ."')) ORDER BY id ASC LIMIT ". $arr['startFrom'] .", ". AJAX_QUANTITY);
 
-	$arr['date'] = date('r',time());
-	$arr['id'] = mysqli_insert_id();
+
+	//$arr['dt'] = date('r',time());
+	//$arr['id'] = mysqli_insert_id();
 	
-    unset($mysql);
 	/*
 	/	Данные в $arr подготовлены для запроса mysql,
 	/	но нам нужно делать вывод на экран, поэтому 
@@ -46,15 +37,22 @@ if($validates)
 	
 	$arr = array_map('stripslashes',$arr);
 	
-	$insertedComment = new Comment($arr);
+    while($row = mysqli_fetch_assoc($result)) {
+    	$comments[] = new Comment($row);
+    }
+    $result->free();
+    unset($mysql);
 
+    $insertedComments = '';
+    foreach($comments as $c){
+    	$insertedComments .= $c->markup();
+    }
 	/* Вывод разметки только-что вставленного комментария: */
 
-	echo json_encode(array('status'=>1,'html'=>$insertedComment->markup()));
+    $status = $insertedComments == '' ? 0 : 1;
+	echo json_encode(array('status'=>$status, 'html'=>$insertedComments));
 
-}
-else
-{
+} else {
 	/* Вывод сообщений об ошибке */
 	echo '{"status":0,"errors":'.json_encode($arr).'}';
 }
