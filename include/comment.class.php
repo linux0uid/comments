@@ -82,10 +82,13 @@ class Comment
 
         $data['ip'] = $_SERVER['REMOTE_ADDR'];
 
-		if(!($data['email'] = filter_input(INPUT_POST,'email',FILTER_VALIDATE_EMAIL)))
+		if(!($data['email'] = filter_input(INPUT_POST,'mail',FILTER_VALIDATE_EMAIL)))
 		{
 			$errors['email'] = 'Пожалуйста, введите правильный Email.';
 		}
+        if($_POST['email'] != '') {
+            $errors['email'] = 'Хакер, что ли?';
+        }
 		
 		if(!($data['url'] = filter_input(INPUT_POST,'url',FILTER_VALIDATE_URL)))
 		{ 

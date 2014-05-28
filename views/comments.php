@@ -22,7 +22,8 @@ $hash = md5($url . URL_SOLL);
         	<input type="text" name="name" id="name" />
             
             <label for="email">Email</label>
-            <input type="text" name="email" id="email" />
+            <input type="hidden" name="email" id="email" />
+            <input type="text" name="mail" id="email" />
             
             <label for="body">Содержание комментария</label>
             <textarea name="body" id="body" cols="20" rows="5"></textarea>
