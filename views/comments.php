@@ -4,15 +4,11 @@
 /	Вывод комментариев один за другим:
 */
 
-/*foreach($comments as $c){*/
-	//echo $c->markup();
-/*}*/
-
 $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $hash = md5($url . URL_SOLL);
 ?>
 
-    <link rel="stylesheet" type="text/css" href="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/styles.css"; ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/styles.css"; ?>" />
 
 <div id="addCommentContainer">
 	<p>Добавить комментарий</p>
@@ -45,12 +41,6 @@ jQuery(document).ready(function($){
     
     // set a cookie "id" to "12345"
     // usage: ec.set(key, value)
-<?php
-    //if(!(isset($_COOKIE['id'])) || (is_null($_COOKIE['id'])) || empty($_COOKIE['id']) || ($_COOKIE['id'] == 'null')) {
-        //echo '    ec.set("id", "123456")';
-    //}
-?>
-    
 
     /* ajax подгрузка комментариев */
     //var comment_id = 1;
@@ -78,7 +68,8 @@ jQuery(document).ready(function($){
                     data: {
                         "startFrom" : startFrom,
                         "id"        : cookID,
-                        "url"       : "<?php echo $url; ?>"
+                        "url"       : "<?php echo $url; ?>",
+                        "hash"      : "<?php echo $hash; ?>"
                     },
                     /* что нужно сделать до отправки запрса */
                     beforeSend: function() {

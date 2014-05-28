@@ -25,10 +25,6 @@ if($validates) {
 	
     $result = $db->query("SELECT `name`, `body`, `email`, `date` FROM ". DB_TABLE ." WHERE `url`='". $arr['url'] ."' AND (`public` OR `uuid`=UNHEX('". $arr['uuid'] ."')) ORDER BY id ASC LIMIT ". $arr['startFrom'] .", ". AJAX_QUANTITY);
 
-
-	//$arr['dt'] = date('r',time());
-	//$arr['id'] = mysqli_insert_id();
-	
 	/*
 	/	Данные в $arr подготовлены для запроса mysql,
 	/	но нам нужно делать вывод на экран, поэтому 

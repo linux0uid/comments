@@ -5,30 +5,6 @@ define (ROOT_DIR, substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_R
 error_reporting(E_ALL^E_NOTICE);
 
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
-include_once implode(DIRECTORY_SEPARATOR, array(PATH_ROOT, "include", "comment.class.php"));
-include_once implode(DIRECTORY_SEPARATOR, array(PATH_ROOT, "include", "mysql.class.php"));
 
-
-/*
-/	Выбираем все комментарии и наполняем массив $comments объектами
-*/
-//global Comment::db;
-$comments = array();
-
-$mysql = new MySQL;
-$db = $mysql->db;
-
-$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-
-$result = $db->query("SELECT * FROM ". DB_TABLE ." WHERE `url`='". $url ."' ORDER BY id ASC");
-
-while($row = mysqli_fetch_assoc($result))
-{
-	$comments[] = new Comment($row);
-}
-$result->free();
-
-unset($mysql);
-//MySQL::close();
 
 require_once implode(DIRECTORY_SEPARATOR, array(PATH_ROOT, "views", "comments.php"));
