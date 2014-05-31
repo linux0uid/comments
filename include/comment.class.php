@@ -259,7 +259,13 @@ class Comment
 		
         if(!($data['commentID'] = filter_input(INPUT_POST,'commentID',FILTER_VALIDATE_INT))) {
 		    $errors['commentID'] = 'Пожалуйста, введите правильный commentID.';
-		}
+        } else {
+            $result = $db->query("SELECT COUNT(*) FROM `". DB_TABLE ."` WHERE `id`='". $data['commentID'] ."' AND `uuid`=UNHEX('". $data['uuid'] ."');");
+            $result = $result->fetch_array();
+            if($result[0] != 1) {
+                $errors['commentID'] = 'Вам нельзя удалить этот комментарий';
+            }
+        }
 		
 		if(!empty($errors)){
 			
