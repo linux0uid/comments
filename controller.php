@@ -1,5 +1,4 @@
 <?php
-define (ROOT_DIR, substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_ROOT']))+1));
 
 // Сообщение об ошибке:
 error_reporting(E_ALL^E_NOTICE);

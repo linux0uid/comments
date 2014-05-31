@@ -15,6 +15,7 @@ define ('AJAX_QUANTITY',  '10');
 
 
 define ('PATH_ROOT', dirname(__FILE__));
+define ('ROOT_DIR', substr(dirname(__FILE__), strlen(realpath($_SERVER['DOCUMENT_ROOT']))+1));
 
 
 /*

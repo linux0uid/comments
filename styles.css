@@ -17,6 +17,7 @@ body{
 	padding:12px;
 	width:400px;
 	position:relative;
+    display: inline-block;
 	background-color:#fcfcfc;
 	border:1px solid white;
 	color:#888;
@@ -110,7 +111,14 @@ label span.error{
 	right:-10px;
 }
 
-#submit{
+.comment span.error{
+	font-size:10px;
+	color:red;
+	position:relative;
+	right:-10px;
+}
+
+#addCommentForm #submit{
 	
 	/* Кнопка "Отправить" */
 	
@@ -133,6 +141,46 @@ label span.error{
 	background-color:#80cdf5;
 	border-color:#52b1e2;
 }
+
+.controll-button {
+    float:right;
+    display: inline-block;
+}
+.controll-button img {
+    vertical-align: middle;
+}
+.controll-button .delete {
+background-color: #FCFCFC;
+display: inline-block;
+font-size: 12px;
+text-decoration: none;
+user-select: none;
+padding: 5px;
+outline: none;
+border-radius: 2px;
+border-width: 0px;
+text-transform: lowercase;
+}
+.controll-button .delete span {
+    background-color: inherit;
+    color: red;
+}
+.controll-button .delete:hover {
+background: linear-gradient(#fff, #BFBFBF);
+box-shadow:
+ inset rgba(0,0,0,.5) 0 -1px 1px,
+ inset rgba(0,0,0,.2) 0 1px,
+ inset #fff 0 2px,
+ rgba(0,0,0,.2) 0 1px 1px;
+}
+.controll-button .delete:active {
+background: linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.1));
+box-shadow:
+ inset rgba(0,0,0,.8) 0 1px 2px,
+ inset rgba(0,0,0,.05) 0 -1px 0,
+ #fff 0 1px 1px;
+}
+
 /* Ниже приведенные стили нужны только для демонстрационной страницы: */
 
 #main{

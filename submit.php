@@ -1,5 +1,4 @@
 <?php
-define (PATH_ROOT, dirname(__FILE__));
 
 // Сообщение об ошибке:
 error_reporting(E_ALL^E_NOTICE);
@@ -35,9 +34,8 @@ if($validates)
 					)");
 
 	$arr['date'] = date('r',time());
-	$arr['id'] = mysqli_insert_id();
+	$arr['id'] = $db->insert_id;
 	
-    unset($mysql);
 	/*
 	/	Данные в $arr подготовлены для запроса mysql,
 	/	но нам нужно делать вывод на экран, поэтому 
@@ -50,7 +48,9 @@ if($validates)
 
 	/* Вывод разметки только-что вставленного комментария: */
 
-	echo json_encode(array('status'=>1,'html'=>$insertedComment->markup()));
+	echo json_encode(array('status'=>1,'html'=>$insertedComment->markup($db)));
+
+    unset($mysql);
 
 }
 else

@@ -1,4 +1,5 @@
 <?php
+define (PATH_ROOT, dirname(__FILE__));
 
 // Сообщение об ошибке:
 error_reporting(E_ALL^E_NOTICE);
@@ -17,28 +18,21 @@ $mysql = new MySQL;
 $db = $mysql->db;
 
 $arr = array();
-$validates = Comment::validateMore($arr, $db);
+$validates = Comment::validateDelete($arr, $db);
 
 if($validates) {
 	/* Все в порядке, вставляем данные в базу: */
 	
-    $result = $db->query("SELECT `id`, `name`, `body`, `email`, `uuid`, `public`, `date` FROM ". DB_TABLE ." WHERE `url`='". $arr['url'] ."' AND (`public` OR `uuid`=UNHEX('". $arr['uuid'] ."')) ORDER BY id ASC LIMIT ". $arr['startFrom'] .", ". AJAX_QUANTITY);
+    $result = $db->query("DELETE FROM `". DB_TABLE ."` WHERE `id`='". $arr['commentID'] ."' AND `uuid`=UNHEX('". $arr['uuid'] ."') AND NOT `public` LIMIT 1;");
 
-    while($row = mysqli_fetch_assoc($result)) {
-        $row['uuid'] = bin2hex($row['uuid']);
-    	$comments[] = new Comment($row);
+    if($db->affected_rows == 1) {
+	    echo json_encode(array('status'=>1));
+    } else {
+	    echo '{"status":0,"errors":'.json_encode(array("error"=>"Вы уже не можете удалить этот комментарий!")).'}';
     }
-    $result->free();
 
-    $insertedComments = '';
-    foreach($comments as $c){
-    	$insertedComments .= $c->markup($db);
-    }
     unset($mysql);
-	/* Вывод разметки только-что вставленного комментария: */
 
-    $status = $insertedComments == '' ? 0 : 1;
-	echo json_encode(array('status'=>$status, 'html'=>$insertedComments));
 
 } else {
 	/* Вывод сообщений об ошибке */

@@ -34,6 +34,10 @@ $hash = md5($url . URL_SOLL);
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
 <script type="text/javascript" src="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/evercookie/evercookie.js"; ?>"></script>
 <script type="text/javascript">
+    //
+    // retrieve a cookie called "id" (simply)
+var cookID;
+
 jQuery(document).ready(function($){
 	/* Следующий код выполняется только после загрузки DOM */
 
@@ -49,87 +53,85 @@ jQuery(document).ready(function($){
 
     /* Переменная-флаг для отслеживания того, происходит ли в данный момент ajax-запрос. В самом начале даем ей значение false, т.е. запрос не в процессе выполнения */
     var inProgress = false;
+    var deleteInProgress = false;
     /* С какой статьи надо делать выборку из базы при ajax-запросе */
     var startFrom = 0;
     //
-    //
-    // retrieve a cookie called "id" (simply)
-    var cookID;
 
     ec.get("id", function(cookID) {
         function getComment() {
 
-                jQuery.ajax({
-                    /* адрес файла-обработчика запроса */
-                    url: '<?php echo "http://" . $_SERVER['SERVER_NAME'] . "/" . ROOT_DIR . "/more.php"; ?>',
-                    /* метод отправки данных */
-                    method: 'POST',
-                    /* данные, которые мы передаем в файл-обработчик */
-                    data: {
-                        "startFrom" : startFrom,
-                        "id"        : cookID,
-                        "url"       : "<?php echo $url; ?>",
-                        "hash"      : "<?php echo $hash; ?>"
-                    },
-                    /* что нужно сделать до отправки запрса */
-                    beforeSend: function() {
-                        /* меняем значение флага на true, т.е. запрос сейчас в процессе выполнения */
-                        inProgress = true;
-                    }
-                    /* что нужно сделать по факту выполнения запроса */
-                }).done(function(data){
-        
-                    /* Преобразуем результат, пришедший от обработчика - преобразуем json-строку обратно в массив */
-                    data = jQuery.parseJSON(data);
-        
-                    /* Если массив не пуст (т.е. статьи там есть) */
-	    		    if(data.status){
-        				/* 
-        				/	Если вставка была успешной, добавляем комментарий 
-        				/	ниже последнего на странице с эффектом slideDown
-        				/*/
-                        data = jQuery.parseHTML(data.html);
-        				jQuery(data).hide().insertBefore('#addCommentContainer').slideDown();
-                        //jQuery('#body').val('');
-        
-                        /* По факту окончания запроса снова меняем значение флага на false */
-                        inProgress = false;
-                        // Увеличиваем на 10 порядковый номер статьи, с которой надо начинать выборку из базы
-                        startFrom += <?php echo AJAX_QUANTITY; ?>;
-                    } else {
-                        moreComments = data.status;
-                    }
-                });
+            jQuery.ajax({
+                /* адрес файла-обработчика запроса */
+                url: '<?php echo "http://" . $_SERVER['SERVER_NAME'] . "/" . ROOT_DIR . "/more.php"; ?>',
+                /* метод отправки данных */
+                method: 'POST',
+                /* данные, которые мы передаем в файл-обработчик */
+                data: {
+                    "startFrom" : startFrom,
+                    "id"        : cookID,
+                    "url"       : "<?php echo $url; ?>",
+                    "hash"      : "<?php echo $hash; ?>"
+                },
+                /* что нужно сделать до отправки запрса */
+                beforeSend: function() {
+                    /* меняем значение флага на true, т.е. запрос сейчас в процессе выполнения */
+                    inProgress = true;
+                }
+                /* что нужно сделать по факту выполнения запроса */
+            }).done(function(data){
+            
+                /* Преобразуем результат, пришедший от обработчика - преобразуем json-строку обратно в массив */
+                data = jQuery.parseJSON(data);
+            
+                /* Если массив не пуст (т.е. статьи там есть) */
+	            if(data.status){
+            		/* 
+            		/	Если вставка была успешной, добавляем комментарий 
+            		/	ниже последнего на странице с эффектом slideDown
+            		/*/
+                    data = jQuery.parseHTML(data.html);
+            		jQuery(data).hide().insertBefore('#addCommentContainer').slideDown();
+                    //jQuery('#body').val('');
+            
+                    /* По факту окончания запроса снова меняем значение флага на false */
+                    inProgress = false;
+                    // Увеличиваем на 10 порядковый номер статьи, с которой надо начинать выборку из базы
+                    startFrom += <?php echo AJAX_QUANTITY; ?>;
+                } else {
+                    moreComments = data.status;
+                }
+            });
         }
         //cookID = value;
         function getUuid() {
 
-                jQuery.ajax({
-                    /* адрес файла-обработчика запроса */
-                    url: '<?php echo "http://" . $_SERVER['SERVER_NAME'] . "/" . ROOT_DIR . "/getuuid.php"; ?>',
-                    /* метод отправки данных */
-                    method: 'POST',
-                    /* данные, которые мы передаем в файл-обработчик */
-                    data: {
-                        "url"       : "<?php echo $url; ?>"
-                    },
-                    /* что нужно сделать до отправки запрса */
-                    beforeSend: function() {
-                        /* меняем значение флага на true, т.е. запрос сейчас в процессе выполнения */
-                        inProgress = true;
-                    }
-                    /* что нужно сделать по факту выполнения запроса */
-                }).done(function(data){
-        
-                    /* Преобразуем результат, пришедший от обработчика - преобразуем json-строку обратно в массив */
-                    data = jQuery.parseJSON(data);
-                    cookID = data.uuid + '$' + data.uuidHash;
-        
-                    ec.set("id", cookID);
-                            /* По факту окончания запроса снова меняем значение флага на false */
-                    inProgress = false;
-                    getComment();
-                });
+            jQuery.ajax({
+                /* адрес файла-обработчика запроса */
+                url: '<?php echo "http://" . $_SERVER['SERVER_NAME'] . "/" . ROOT_DIR . "/getuuid.php"; ?>',
+                /* метод отправки данных */
+                method: 'POST',
+                /* данные, которые мы передаем в файл-обработчик */
+                data: {
+                    "url"       : "<?php echo $url; ?>"
+                },
+                /* что нужно сделать до отправки запрса */
+                beforeSend: function() {
+                    /* меняем значение флага на true, т.е. запрос сейчас в процессе выполнения */
+                    inProgress = true;
+                }
+                /* что нужно сделать по факту выполнения запроса */
+            }).done(function(data){
+            
+                /* Преобразуем результат, пришедший от обработчика - преобразуем json-строку обратно в массив */
+                data = jQuery.parseJSON(data);
+                cookID = data.uuid + '$' + data.uuidHash;
+            
+                ec.set("id", cookID);
+                        /* По факту окончания запроса снова меняем значение флага на false */
+                inProgress = false;
+                getComment();
+            });
         }
         if(cookID === 'null') {
             getUuid();
@@ -145,6 +147,7 @@ jQuery(document).ready(function($){
             }
         });
     });
+
 
 	/* Данный флаг предотвращает отправку нескольких комментариев: */
 	var working = false;
@@ -192,4 +195,51 @@ jQuery(document).ready(function($){
 	});
 	
 });
+
+function delete_comment(commentID) {
+
+    jQuery.ajax({
+        /* адрес файла-обработчика запроса */
+        url: '<?php echo "http://" . $_SERVER['SERVER_NAME'] . "/" . ROOT_DIR . "/delete.php"; ?>',
+        /* метод отправки данных */
+        method: 'POST',
+        /* данные, которые мы передаем в файл-обработчик */
+        data: {
+            "commentID" : commentID,
+            "id"        : cookID,
+            "url"       : "<?php echo $url; ?>",
+            "hash"      : "<?php echo $hash; ?>"
+        },
+        /* что нужно сделать до отправки запрса */
+        beforeSend: function() {
+            /* меняем значение флага на true, т.е. запрос сейчас в процессе выполнения */
+            deleteInProgress = true;
+        }
+        /* что нужно сделать по факту выполнения запроса */
+    }).done(function(data){
+
+        /* Преобразуем результат, пришедший от обработчика - преобразуем json-строку обратно в массив */
+        data = jQuery.parseJSON(data);
+
+        var comment = "#comment-" +commentID;
+	    if(data.status){
+			/* 
+			/	Если удаление было успешным, удаляем комментарий 
+			/	на странице с эффектом slideUp
+			/*/
+            jQuery(comment).slideUp('slow').fadeOut('slow', function() {
+                this.remove();
+            });
+
+        } else {
+			jQuery.each(data.errors,function(k,v){
+				jQuery(comment).append('<span class="error">'+v+'</span></br>');
+                jQuery(comment + ' .controll-button').remove();
+			});
+        }
+
+        /* По факту окончания запроса снова меняем значение флага на false */
+        deleteInProgress = false;
+    });
+}
 </script>
