@@ -8,6 +8,19 @@ $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $hash = md5($url . URL_SOLL);
 ?>
 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
+<script src="<?php echo 'http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR; ?>/ckeditor/ckeditor.js"></script>
+<script src="<?php echo 'http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR; ?>/ckeditor/adapters/jquery.js"></script>
+<script type="text/javascript">
+jQuery( document ).ready( function() {
+	jQuery( 'textarea#commentsBody' ).ckeditor({
+	allowedContent:
+		'p strong em;' +
+		'a[!href];' +
+		'span{!color};'
+} );
+} );
+</script>
 <link rel="stylesheet" type="text/css" href="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/styles.css"; ?>" />
 
 <div id="addCommentContainer">
@@ -22,7 +35,7 @@ $hash = md5($url . URL_SOLL);
             <input type="text" name="mail" id="email" />
             
             <label for="body">Содержание комментария</label>
-            <textarea name="body" id="body" cols="20" rows="5"></textarea>
+            <textarea name="body" id="commentsBody" cols="20" rows="5"></textarea>
             
             <input type="hidden" name="url" value="<?php echo $url; ?>" />
             <input type="hidden" name="hash" value="<?php echo $hash; ?>" />
@@ -31,7 +44,6 @@ $hash = md5($url . URL_SOLL);
     </form>
 </div>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
 <script type="text/javascript" src="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/evercookie/evercookie.js"; ?>"></script>
 <script type="text/javascript">
     //
@@ -57,6 +69,8 @@ jQuery(document).ready(function($){
     /* С какой статьи надо делать выборку из базы при ajax-запросе */
     var startFrom = 0;
     //
+    jQuery('#commentsBody').val('');
+
 
     ec.get("id", function(cookID) {
         function getComment() {
@@ -92,7 +106,6 @@ jQuery(document).ready(function($){
             		/*/
                     data = jQuery.parseHTML(data.html);
             		jQuery(data).hide().insertBefore('#addCommentContainer').slideDown();
-                    //jQuery('#body').val('');
             
                     /* По факту окончания запроса снова меняем значение флага на false */
                     inProgress = false;
@@ -177,7 +190,7 @@ jQuery(document).ready(function($){
 
                 data = jQuery.parseHTML(msg.html);
 				jQuery(data).hide().insertBefore('#addCommentContainer').slideDown();
-				jQuery('#body').val('');
+				jQuery('#commentsBody').val('');
 			}
 			else {
 

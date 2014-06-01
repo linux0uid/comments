@@ -103,7 +103,7 @@ class Comment
 				
 				<div class="name">'.$link_open.$d['name'].$link_close.'</div>
 				<div class="date" title="Добавлен '. $this->rdate('d F Y \в H:i', $d['date'], 1) .'">'. $this->rdate('d F Y', $d['date'], 1) .'</div>
-                <p>'.$d['body'].'</p>'.
+                <p>'.htmlspecialchars_decode($d['body']).'</p>'.
                 $controll_button .
 			'</div>
 		';
@@ -294,6 +294,9 @@ class Comment
 		if(mb_strlen($str,'utf8')<1)
 			return false;
 		
+        // Оставляем только разрешонные теги
+        $tags = '<a><br><em><p><strong><span>';
+        $str = strip_tags($str, $tags);
 		// Кодируем все специальные символы html (<, >, ", & .. etc) и преобразуем
 		// символ новой строки в тег <br>:
 		
