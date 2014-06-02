@@ -85,6 +85,10 @@ class Comment
 
         if ($result[0] == 1) {
             $controll_button = '<div class="controll-button">
+                                    <button class="edit" onclick="edit_comment('. $d['id'] .')" >
+                                        <img src="http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/img/edit.png" />
+                                        <span>Редактировать</span>
+                                    </button>
                                     <button class="delete" onclick="delete_comment('. $d['id'] .')" >
                                         <img src="http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/img/delete.png" />
                                         <span>Удалить</span>
@@ -103,7 +107,7 @@ class Comment
 				
 				<div class="name">'.$link_open.$d['name'].$link_close.'</div>
 				<div class="date" title="Добавлен '. $this->rdate('d F Y \в H:i', $d['date'], 1) .'">'. $this->rdate('d F Y', $d['date'], 1) .'</div>
-                <p>'.htmlspecialchars_decode($d['body']).'</p>'.
+                <div class="content">'.htmlspecialchars_decode($d['body']).'</div>'.
                 $controll_button .
 			'</div>
 		';
@@ -135,6 +139,19 @@ class Comment
         }
     }
 
+    public static function validateCommentID(&$data, &$errors, &$db)
+    {
+        if(!($data['commentID'] = filter_input(INPUT_POST,'commentID',FILTER_VALIDATE_INT))) {
+		    $errors['commentID'] = 'Пожалуйста, введите правильный commentID.';
+        } else {
+            $result = $db->query("SELECT COUNT(*) FROM `". DB_TABLE ."` WHERE `id`='". $data['commentID'] ."' AND `uuid`=UNHEX('". $data['uuid'] ."');");
+            $result = $result->fetch_array();
+            if($result[0] != 1) {
+                $errors['commentID'] = 'Вам нельзя редактировать и удалять этот комментарий';
+            }
+        }
+    }
+		
 	public static function validate(&$arr, &$db)
 	{
 		/*
@@ -198,6 +215,51 @@ class Comment
 		
 	}
 
+	public static function validateEdit(&$arr, &$db)
+	{
+		/*
+		/	Данный метод используется для проверки данных отправляемых через AJAX.
+		/
+		/	Он возвращает true/false в зависимости от правильности данных, и наполняет
+		/	массив $arr, который преается как параметр либо данными либо сообщением об ошибке.
+		*/
+		
+		$errors = array();
+		$data	= array();
+
+        Comment::validateUuid($data, $errors);
+        Comment::validateUrl($data, $errors);
+        Comment::validateCommentID($data, $errors, $db);
+
+		// Используем функцию filter_input, введенную в PHP 5.2.0
+
+        $data['ip'] = $_SERVER['REMOTE_ADDR'];
+
+		if(!($data['body'] = filter_input(INPUT_POST,'body',FILTER_CALLBACK,array('options'=>'Comment::validate_text'))))
+		{
+			$errors['body'] = 'Пожалуйста, введите текст комментария.';
+		}
+		
+		if(!empty($errors)){
+			
+			// Если есть ошибки, копируем массив $errors в $arr:
+			
+			$arr = $errors;
+			return false;
+		}
+		
+		// Если данные введены правильно, подчищаем данные и копируем их в $arr:
+		
+		foreach($data as $k=>$v){
+			$arr[$k] = mysqli_real_escape_string($db, $v);
+		}
+		
+		// email дожен быть в нижнем регистре:
+		
+		return true;
+		
+	}
+
 	public static function validateMore(&$arr, &$db)
 	{
 		/*
@@ -256,16 +318,7 @@ class Comment
 		// Используем функцию filter_input, введенную в PHP 5.2.0
         Comment::validateUuid($data, $errors);
         Comment::validateUrl($data, $errors);
-		
-        if(!($data['commentID'] = filter_input(INPUT_POST,'commentID',FILTER_VALIDATE_INT))) {
-		    $errors['commentID'] = 'Пожалуйста, введите правильный commentID.';
-        } else {
-            $result = $db->query("SELECT COUNT(*) FROM `". DB_TABLE ."` WHERE `id`='". $data['commentID'] ."' AND `uuid`=UNHEX('". $data['uuid'] ."');");
-            $result = $result->fetch_array();
-            if($result[0] != 1) {
-                $errors['commentID'] = 'Вам нельзя удалить этот комментарий';
-            }
-        }
+        Comment::validateCommentID($data, $errors, $db);
 		
 		if(!empty($errors)){
 			

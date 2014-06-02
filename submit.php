@@ -23,7 +23,7 @@ if($validates)
 {
 	/* Все в порядке, вставляем данные в базу: */
 	
-	$db->query("	INSERT INTO ". DB_TABLE ."(name,url,email,body,uuid,ip)
+	$db->query("	INSERT INTO `". DB_TABLE ."`(name,url,email,body,uuid,ip)
 					VALUES (
 						'".$arr['name']."',
 						'".$arr['url']."',

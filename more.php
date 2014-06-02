@@ -22,7 +22,7 @@ $validates = Comment::validateMore($arr, $db);
 if($validates) {
 	/* Все в порядке, вставляем данные в базу: */
 	
-    $result = $db->query("SELECT `id`, `name`, `body`, `email`, `uuid`, `public`, `date` FROM ". DB_TABLE ." WHERE `url`='". $arr['url'] ."' AND (`public` OR `uuid`=UNHEX('". $arr['uuid'] ."')) ORDER BY id ASC LIMIT ". $arr['startFrom'] .", ". AJAX_QUANTITY);
+    $result = $db->query("SELECT `id`, `name`, `body`, `email`, `uuid`, `public`, `date` FROM `". DB_TABLE ."` WHERE `url`='". $arr['url'] ."' AND (`public` OR `uuid`=UNHEX('". $arr['uuid'] ."')) ORDER BY id ASC LIMIT ". $arr['startFrom'] .", ". AJAX_QUANTITY);
 
     while($row = mysqli_fetch_assoc($result)) {
         $row['uuid'] = bin2hex($row['uuid']);

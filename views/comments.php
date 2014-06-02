@@ -13,7 +13,7 @@ $hash = md5($url . URL_SOLL);
 <script src="<?php echo 'http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR; ?>/ckeditor/adapters/jquery.js"></script>
 <script type="text/javascript">
 jQuery( document ).ready( function() {
-	jQuery( 'textarea#commentsBody' ).ckeditor({
+	jQuery('textarea#commentsBody').ckeditor({
 	allowedContent:
 		'p strong em;' +
 		'a[!href];' +
@@ -65,7 +65,6 @@ jQuery(document).ready(function($){
 
     /* Переменная-флаг для отслеживания того, происходит ли в данный момент ajax-запрос. В самом начале даем ей значение false, т.е. запрос не в процессе выполнения */
     var inProgress = false;
-    var deleteInProgress = false;
     /* С какой статьи надо делать выборку из базы при ajax-запросе */
     var startFrom = 0;
     //
@@ -152,7 +151,6 @@ jQuery(document).ready(function($){
             getComment();
         }
         
-        /* Используйте вариант $('#more').click(function() для того, чтобы дать пользователю возможность управлять процессом, кликая по кнопке "Дальше" под блоком статей (см. файл index.php) */
         jQuery(window).scroll(function() {
             /* Если высота окна + высота прокрутки больше или равны высоте всего документа и ajax-запрос в настоящий момент не выполняется, то запускаем ajax-запрос */
             if(jQuery(window).scrollTop() + jQuery(window).height() >= jQuery(document).height() - 800 && !inProgress && moreComments) {
@@ -208,6 +206,113 @@ jQuery(document).ready(function($){
 	});
 	
 });
+</script>
+
+<script type="text/javascript">
+
+var saveInProgress = false;
+var deleteInProgress = false;
+
+function edit_comment(commentID) {
+    var commentSrc = "#comment-" +commentID +" .content";
+    var oldComment = jQuery(commentSrc).html();
+    jQuery(commentSrc).empty();
+    jQuery(commentSrc).append('<textarea></textarea>');
+    commentSrc += ' textarea';
+    jQuery(commentSrc).append(oldComment);
+    jQuery(commentSrc).ckeditor({
+	    allowedContent:
+	    	'p strong em;' +
+	    	'a[!href];' +
+	    	'span{!color};'
+    });
+    jQuery(commentSrc).val(oldComment);
+    var controllButton = "#comment-" +commentID +" .controll-button";
+    jQuery(controllButton +" .edit").remove();
+    jQuery(controllButton +" .delete").before(function(){
+        var buttonCancel =  '<button class="save" onclick="save_comment(\'' +commentID +'\')" >' +
+                                '<img style="padding: 0 2px;" src="http://<?php echo $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR; ?>/img/save.png" />' +
+                                '<span>Сохранить</span>' +
+                            '</button>';
+        buttonCancel +=     '<button class="cancel" onclick="cancel_comment(\'' +commentID +'\')" >' +
+                                '<img style="padding: 0 2px;" src="http://<?php echo $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR; ?>/img/cancel.png" />' +
+                                '<span>Отменить</span>' +
+                           '</button>';
+        return buttonCancel;
+    });
+}
+
+function save_comment(commentID){
+    if(saveInProgress){
+        return;
+    }
+
+    var commentSrc = "#comment-" +commentID;
+    var commentSrcTextarea = commentSrc +" .content textarea";
+    var newBody = jQuery(commentSrcTextarea).val();
+    jQuery.ajax({
+        /* адрес файла-обработчика запроса */
+        url: '<?php echo "http://" . $_SERVER['SERVER_NAME'] . "/" . ROOT_DIR . "/edit.php"; ?>',
+        /* метод отправки данных */
+        method: 'POST',
+        /* данные, которые мы передаем в файл-обработчик */
+        data: {
+            "commentID" : commentID,
+            "body"      : newBody,
+            "url"       : "<?php echo $url; ?>",
+            "hash"      : "<?php echo $hash; ?>"
+        },
+        /* что нужно сделать до отправки запрса */
+        beforeSend: function() {
+            /* меняем значение флага на true, т.е. запрос сейчас в процессе выполнения */
+            saveInProgress = true;
+        }
+        /* что нужно сделать по факту выполнения запроса */
+    }).done(function(data){
+
+        /* Преобразуем результат, пришедший от обработчика - преобразуем json-строку обратно в массив */
+        data = jQuery.parseJSON(data);
+
+        var comment = "#comment-" +commentID;
+	    if(data.status){
+			/* 
+			/	Если удаление было успешным, удаляем комментарий 
+			/	на странице с эффектом slideUp
+			/*/
+            var nextComment = jQuery(commentSrc).next();
+            jQuery(commentSrc).remove();
+            var newComment = jQuery.parseHTML(data.html);
+            jQuery(nextComment).before(newComment);
+        } else {
+            cancel_comment(commentID);
+			jQuery.each(data.errors,function(k,v){
+				jQuery(commentSrc).append('<span class="error">'+v+'</span></br>');
+                jQuery(commentSrc + ' .controll-button').remove();
+			});
+        }
+
+        /* По факту окончания запроса снова меняем значение флага на false */
+        saveInProgress = false;
+    });
+}
+
+function cancel_comment(commentID){
+    var commentSrc = "#comment-" +commentID +" .content";
+    var commentSrcTextarea = commentSrc +" textarea";
+    var oldComment = jQuery(commentSrcTextarea).html();
+    jQuery(commentSrc).empty().append(oldComment);
+
+    var controllButton = "#comment-" +commentID +" .controll-button";
+    jQuery(controllButton +" .save").remove();
+    jQuery(controllButton +" .cancel").remove();
+    jQuery(controllButton +" .delete").before(function(){
+        var buttonCancel = '<button class="edit" onclick="edit_comment(\'' +commentID +'\')" >' +
+                                '<img style="padding: 0 2px;" src="http://<?php echo $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR; ?>/img/edit.png" />' +
+                                '<span>Редактировать</span>' +
+                           '</button>';
+        return buttonCancel;
+    });
+}
 
 function delete_comment(commentID) {
 
@@ -219,7 +324,6 @@ function delete_comment(commentID) {
         /* данные, которые мы передаем в файл-обработчик */
         data: {
             "commentID" : commentID,
-            "id"        : cookID,
             "url"       : "<?php echo $url; ?>",
             "hash"      : "<?php echo $hash; ?>"
         },
@@ -255,4 +359,5 @@ function delete_comment(commentID) {
         deleteInProgress = false;
     });
 }
+
 </script>

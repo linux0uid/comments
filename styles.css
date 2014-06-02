@@ -76,9 +76,9 @@ body{
 	color:#bbb;
 }
 
-.comment p,
+.comment div.content,
 #addCommentContainer p{
-	font-size:18px;
+	font-size:13px;
 	line-height:1.5;
 	overflow-x:hidden;
 }
@@ -147,9 +147,9 @@ label span.error{
     display: inline-block;
 }
 .controll-button img {
-    vertical-align: middle;
+    vertical-align: bottom;
 }
-.controll-button .delete {
+.controll-button button {
 background-color: #FCFCFC;
 display: inline-block;
 font-size: 12px;
@@ -159,13 +159,25 @@ padding: 5px;
 outline: none;
 border-radius: 2px;
 border-width: 0px;
-text-transform: lowercase;
+text-transform: capitalize;
 }
 .controll-button .delete span {
     background-color: inherit;
     color: red;
 }
-.controll-button .delete:hover {
+.controll-button .edit span {
+    background-color: inherit;
+    color: blue;
+}
+.controll-button .save span {
+    background-color: inherit;
+    color: #45A71A;
+}
+.controll-button .cancel span {
+    background-color: inherit;
+    color: #4788A5;
+}
+.controll-button button:hover {
 background: linear-gradient(#fff, #BFBFBF);
 box-shadow:
  inset rgba(0,0,0,.5) 0 -1px 1px,
@@ -173,7 +185,7 @@ box-shadow:
  inset #fff 0 2px,
  rgba(0,0,0,.2) 0 1px 1px;
 }
-.controll-button .delete:active {
+.controll-button button:active {
 background: linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.1));
 box-shadow:
  inset rgba(0,0,0,.8) 0 1px 2px,
