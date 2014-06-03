@@ -170,8 +170,8 @@ jQuery(document).ready(function($){
 		if(working) return false;
 		
 		working = true;
-		jQuery('#submit').val('Занято...');
-		jQuery('span.error').remove();
+		jQuery('#addCommentForm #submit').val('Занято...');
+		jQuery('#addCommentForm span.error').remove();
 		
 		/* Отправляем поля формы в submit.php: */
         jQuery.post('<?php echo "http://" . $_SERVER['SERVER_NAME'] . "/" . ROOT_DIR . "/submit.php"; ?>',$(this).serialize(),function(msg){
@@ -248,6 +248,7 @@ function save_comment(commentID){
     }
 
     var commentSrc = "#comment-" +commentID;
+	jQuery(commentSrc +' span.error').remove();
     var commentSrcTextarea = commentSrc +" .content textarea";
     var newBody = jQuery(commentSrcTextarea).val();
     jQuery.ajax({
@@ -274,7 +275,8 @@ function save_comment(commentID){
         data = jQuery.parseJSON(data);
 
         var comment = "#comment-" +commentID;
-	    if(data.status){
+	    switch(data.status){
+        case 0:
 			/* 
 			/	Если удаление было успешным, удаляем комментарий 
 			/	на странице с эффектом slideUp
@@ -283,12 +285,15 @@ function save_comment(commentID){
             jQuery(commentSrc).remove();
             var newComment = jQuery.parseHTML(data.html);
             jQuery(nextComment).before(newComment);
-        } else {
+            break
+        case 1:
             cancel_comment(commentID);
+            jQuery(commentSrc + ' .controll-button').remove();
+        case 2:
 			jQuery.each(data.errors,function(k,v){
-				jQuery(commentSrc).append('<span class="error">'+v+'</span></br>');
-                jQuery(commentSrc + ' .controll-button').remove();
+				jQuery(commentSrc).append('<span class="error">'+v+'</span>');
 			});
+            break
         }
 
         /* По факту окончания запроса снова меняем значение флага на false */
@@ -297,7 +302,9 @@ function save_comment(commentID){
 }
 
 function cancel_comment(commentID){
-    var commentSrc = "#comment-" +commentID +" .content";
+    var commentSrc = "#comment-" +commentID;
+	jQuery(commentSrc +' span.error').remove();
+    commentSrc +=  " .content";
     var commentSrcTextarea = commentSrc +" textarea";
     var oldComment = jQuery(commentSrcTextarea).html();
     jQuery(commentSrc).empty().append(oldComment);

@@ -116,6 +116,7 @@ label span.error{
 	color:red;
 	position:relative;
 	right:-10px;
+    display: inline-block;
 }
 
 #addCommentForm #submit{

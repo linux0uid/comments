@@ -66,15 +66,15 @@ if($validates) {
 
 	    /* Вывод разметки только-что вставленного комментария: */
 
-	    echo json_encode(array('status'=>1,'html'=>$insertedComment->markup($db)));
+	    echo json_encode(array('status'=>0,'html'=>$insertedComment->markup($db)));
 
     } else {
-	    echo '{"status":0,"errors":'.json_encode(array("error"=>"Вы уже не можете редактировать этот комментарий!")).'}';
+	    echo '{"status":1,"errors":'.json_encode(array("error"=>"Вы уже не можете редактировать этот комментарий!")).'}';
     }
 
 } else {
 	/* Вывод сообщений об ошибке */
-	echo '{"status":0,"errors":'.json_encode($arr).'}';
+	echo '{"status":2,"errors":'.json_encode($arr).'}';
 }
 
 unset($mysql);
