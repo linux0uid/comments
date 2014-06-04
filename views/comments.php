@@ -16,13 +16,14 @@ jQuery( document ).ready( function() {
 	jQuery('textarea#commentsBody').ckeditor({
 	allowedContent:
 		'p strong em;' +
-		'a[!href];' +
+		'a[!href,!target];' +
 		'span{!color};'
 } );
 } );
 </script>
 <link rel="stylesheet" type="text/css" href="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/styles.css"; ?>" />
 
+<div class="CommentContainer">
 <div id="addCommentContainer">
 	<p>Добавить комментарий</p>
 	<form id="addCommentForm" method="post" action="">
@@ -43,8 +44,10 @@ jQuery( document ).ready( function() {
         </div>
     </form>
 </div>
+</div>
 
 <script type="text/javascript" src="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/evercookie/evercookie.js"; ?>"></script>
+<script type="text/javascript" src="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/evercookie/swfobject.js"; ?>"></script>
 <script type="text/javascript">
     //
     // retrieve a cookie called "id" (simply)

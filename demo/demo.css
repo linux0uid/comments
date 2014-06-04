@@ -1,0 +1,42 @@
+ 
+body{
+	background: #000000 url(header.jpg) no-repeat center top;
+}
+
+#main{
+	position:relative;
+	margin:0 auto;
+	width:427px;
+}
+
+h1{
+	color:#7E94A2;
+	font-size:30px;
+	margin:50px 0 20px;
+}
+
+h2{
+	font-size:18px;
+	margin-bottom:50px;
+}
+
+h1,h2{
+	font-family:"Myriad Pro",Arial,Helvetica,sans-serif;
+	text-align:center;
+	font-weight:normal;
+	text-shadow:0 1px 1px #FFFFFF;
+}
+
+a, a:visited {
+	color:#0196e3;
+	text-decoration:none;
+	outline:none;
+}
+
+a:hover{
+	text-decoration:underline;
+}
+
+a img{
+	border:none;
+}

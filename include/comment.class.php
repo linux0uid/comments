@@ -78,7 +78,7 @@ class Comment
 		$d['date'] = strtotime($d['date']);
 		
 		// Нужно для установки изображения по умолчанию:
-		$url = 'http://'.dirname($_SERVER['SERVER_NAME'] . '/' . ROOT_DIR) . '/img/default_avatar.gif';
+		$url = 'http://'. $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/img/default_avatar.gif';
 		
         $result = $db->query("SELECT COUNT(*) FROM `". DB_TABLE ."` WHERE `id`='". $d['id'] ."' AND `uuid`=UNHEX('". $d['uuid'] ."') AND NOT `public` LIMIT 1;");
         $result = $result->fetch_array();

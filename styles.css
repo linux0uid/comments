@@ -1,11 +1,17 @@
+
 *{
-	margin:0;
-	padding:0;
+       margin:0;
+       padding:0;
 }
 
-body{
-	font-size:14px;
-	background: #000000 url(header.jpg) no-repeat center top;
+.CommentContainer {
+	position:relative;
+	margin:0 auto;
+	width:427px;
+}
+
+.CommentContainer p {
+	font-size:13px;
 	font-family:Arial, Helvetica, sans-serif;
 }
 
@@ -77,10 +83,11 @@ body{
 }
 
 .comment div.content,
-#addCommentContainer p{
+#addCommentContainer p,
+.comment span {
 	font-size:13px;
 	line-height:1.5;
-	overflow-x:hidden;
+	overflow:hidden;
 }
 
 #addCommentContainer input[type=text],
@@ -106,13 +113,15 @@ label{
 }
 
 label span.error{
+    font-size: 10px;
 	color:red;
 	position:relative;
 	right:-10px;
 }
 
 .comment span.error{
-	font-size:10px;
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;
 	color:red;
 	position:relative;
 	right:-10px;
@@ -153,7 +162,6 @@ label span.error{
 .controll-button button {
 background-color: #FCFCFC;
 display: inline-block;
-font-size: 12px;
 text-decoration: none;
 user-select: none;
 padding: 5px;
@@ -161,6 +169,9 @@ outline: none;
 border-radius: 2px;
 border-width: 0px;
 text-transform: capitalize;
+}
+.controll-button button span {
+font-size: 12px;
 }
 .controll-button .delete span {
     background-color: inherit;
@@ -194,42 +205,4 @@ box-shadow:
  #fff 0 1px 1px;
 }
 
-/* Ниже приведенные стили нужны только для демонстрационной страницы: */
-
-#main{
-	position:relative;
-	margin:0 auto;
-	width:427px;
-}
-
-h1{
-	color:#7E94A2;
-	font-size:30px;
-	margin:50px 0 20px;
-}
-
-h2{
-	font-size:18px;
-	margin-bottom:50px;
-}
-
-h1,h2{
-	font-family:"Myriad Pro",Arial,Helvetica,sans-serif;
-	text-align:center;
-	font-weight:normal;
-	text-shadow:0 1px 1px #FFFFFF;
-}
-
-a, a:visited {
-	color:#0196e3;
-	text-decoration:none;
-	outline:none;
-}
-
-a:hover{
-	text-decoration:underline;
-}
-
-a img{
-	border:none;
-}
+ 
