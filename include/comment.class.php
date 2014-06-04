@@ -113,45 +113,6 @@ class Comment
 		';
 	}
 	
-    public static function validateUuid(&$data, &$errors)
-    {
-        $uu = explode("$", $_COOKIE['id']);
-        $uuid = $uu[0];
-        $uuid_hash = $uu[1];
-
-        if (md5($uuid . UUID_SOLL) !== $uuid_hash) {
-            $errors['uuid'] = 'Не хороший ID';
-        } else {
-            $data['uuid'] = str_replace('-', '', $uuid);
-        }
-    }
-
-    public static function validateUrl(&$data, &$errors)
-    {
-		if(!($data['url'] = filter_input(INPUT_POST,'url',FILTER_VALIDATE_URL))) { 
-			$errors['url'] = 'Пожалуйста, введите правильный url.';
-        } elseif(strpos($_POST['url'], 'http://'.$_SERVER['SERVER_NAME']) !== 0) {
-			$errors['url'] = 'Пожалуйста, проверте правильность домена.';
-        }
-        
-        if(md5($data['url']. URL_SOLL) != $_POST['hash']) {
-            $errors['hash'] = 'Не верный хеш.';
-        }
-    }
-
-    public static function validateCommentID(&$data, &$errors, &$db)
-    {
-        if(!($data['commentID'] = filter_input(INPUT_POST,'commentID',FILTER_VALIDATE_INT))) {
-		    $errors['commentID'] = 'Пожалуйста, введите правильный commentID.';
-        } else {
-            $result = $db->query("SELECT COUNT(*) FROM `". DB_TABLE ."` WHERE `id`='". $data['commentID'] ."' AND `uuid`=UNHEX('". $data['uuid'] ."');");
-            $result = $result->fetch_array();
-            if($result[0] != 1) {
-                $errors['commentID'] = 'Вам нельзя редактировать и удалять этот комментарий';
-            }
-        }
-    }
-		
 	public static function validate(&$arr, &$db)
 	{
 		/*
@@ -160,7 +121,7 @@ class Comment
 		/	Он возвращает true/false в зависимости от правильности данных, и наполняет
 		/	массив $arr, который преается как параметр либо данными либо сообщением об ошибке.
 		*/
-		
+        
 		$errors = array();
 		$data	= array();
 
@@ -181,16 +142,19 @@ class Comment
 		
 		// Используем фильтр с возвратной функцией:
 		
-		if(!($data['body'] = filter_input(INPUT_POST,'body',FILTER_CALLBACK,array('options'=>'Comment::validate_text'))))
+		if(!($data['body'] = filter_input(INPUT_POST,'body',FILTER_CALLBACK,array('options'=>'Comment::validate_body'))))
 		{
 			$errors['body'] = 'Пожалуйста, введите текст комментария.';
 		}
 		
+
 		if(!($data['name'] = filter_input(INPUT_POST,'name',FILTER_CALLBACK,array('options'=>'Comment::validate_text'))))
 		{
 			$errors['name'] = 'Пожалуйста, введите имя.';
         } elseif (mb_strlen($data['name'], 'UTF-8') < 2) {
 			$errors['name'] = 'Пожалуйста, введите имя, не меньше 2 символов.';
+        } else {
+            Comment::validate_name($data, $errors, $db); 
         }
 		
 		if(!empty($errors)){
@@ -235,7 +199,7 @@ class Comment
 
         $data['ip'] = $_SERVER['REMOTE_ADDR'];
 
-		if(!($data['body'] = filter_input(INPUT_POST,'body',FILTER_CALLBACK,array('options'=>'Comment::validate_text'))))
+		if(!($data['body'] = filter_input(INPUT_POST,'body',FILTER_CALLBACK,array('options'=>'Comment::validate_body'))))
 		{
 			$errors['body'] = 'Пожалуйста, введите текст комментария.';
 		}
@@ -338,7 +302,29 @@ class Comment
 		
 	}
 
-	private static function validate_text($str)
+	private static function validate_name(&$data, &$errors, &$db)
+	{
+        $result = $db->query("SELECT `name` FROM `". DB_TABLE_STOP_WORDS ."`;");
+
+        while($row = $result->fetch_row()) {
+            if (stripos($data['name'], $row[0]) !== false) {
+                $errors['name'] = 'Вы не можете использовать "'. $row[0] .'" в своем имени.';
+            }
+        }
+
+        $result->free();
+		
+	}
+
+	private static function validate_body($str)
+	{
+        $tags = '<a><br><em><p><strong><span>';
+        $str = Comment::validate_text($str, $tags);
+		
+		return $str;
+	}
+
+	private static function validate_text($str, $tags = '')
 	{
 		/*
 		/	Данный метод используется как FILTER_CALLBACK
@@ -348,7 +334,6 @@ class Comment
 			return false;
 		
         // Оставляем только разрешонные теги
-        $tags = '<a><br><em><p><strong><span>';
         $str = strip_tags($str, $tags);
 		// Кодируем все специальные символы html (<, >, ", & .. etc) и преобразуем
 		// символ новой строки в тег <br>:
@@ -361,5 +346,44 @@ class Comment
 		return $str;
 	}
 
+    private static function validateUuid(&$data, &$errors)
+    {
+        $uu = explode("$", $_COOKIE['id']);
+        $uuid = $uu[0];
+        $uuid_hash = $uu[1];
+
+        if (md5($uuid . UUID_SOLL) !== $uuid_hash) {
+            $errors['uuid'] = 'Не хороший ID';
+        } else {
+            $data['uuid'] = str_replace('-', '', $uuid);
+        }
+    }
+
+    private static function validateUrl(&$data, &$errors)
+    {
+		if(!($data['url'] = filter_input(INPUT_POST,'url',FILTER_VALIDATE_URL))) { 
+			$errors['url'] = 'Пожалуйста, введите правильный url.';
+        } elseif(strpos($_POST['url'], 'http://'.$_SERVER['SERVER_NAME']) !== 0) {
+			$errors['url'] = 'Пожалуйста, проверте правильность домена.';
+        }
+        
+        if(md5($data['url']. URL_SOLL) != $_POST['hash']) {
+            $errors['hash'] = 'Не верный хеш.';
+        }
+    }
+
+    private static function validateCommentID(&$data, &$errors, &$db)
+    {
+        if(!($data['commentID'] = filter_input(INPUT_POST,'commentID',FILTER_VALIDATE_INT))) {
+		    $errors['commentID'] = 'Пожалуйста, введите правильный commentID.';
+        } else {
+            $result = $db->query("SELECT COUNT(*) FROM `". DB_TABLE ."` WHERE `id`='". $data['commentID'] ."' AND `uuid`=UNHEX('". $data['uuid'] ."');");
+            $result = $result->fetch_array();
+            if($result[0] != 1) {
+                $errors['commentID'] = 'Вам нельзя редактировать и удалять этот комментарий';
+            }
+        }
+    }
+		
 }
 
