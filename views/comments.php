@@ -16,7 +16,7 @@ jQuery( document ).ready( function() {
 	jQuery('textarea#commentsBody').ckeditor({
 	allowedContent:
 		'p strong em;' +
-		'a[!href,!target];' +
+		'a[!href];' +
 		'span{!color};'
 } );
 } );
