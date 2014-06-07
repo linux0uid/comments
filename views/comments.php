@@ -231,6 +231,7 @@ function edit_comment(commentID) {
     });
     jQuery(commentSrc).val(oldComment);
     var controllButton = "#comment-" +commentID +" .controll-button";
+    jQuery(controllButton +" .edit").prev("button").hide();
     jQuery(controllButton +" .edit").remove();
     jQuery(controllButton +" .delete").before(function(){
         var buttonCancel =  '<button class="save" onclick="save_comment(\'' +commentID +'\')" >' +
@@ -322,6 +323,7 @@ function cancel_comment(commentID){
                            '</button>';
         return buttonCancel;
     });
+    jQuery(controllButton +" .edit").prev("button").show();
 }
 
 function delete_comment(commentID) {

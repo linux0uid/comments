@@ -22,6 +22,10 @@ $validates = Comment::validateEdit($arr, $db);
 if($validates) {
 	/* Все в порядке, вставляем данные в базу: */
 	
+    $query_rule_uuid = (Comment::is_admin_uuid($arr['uuid'], $db)) ? '' : " AND
+					                                                            `uuid`  = UNHEX('".$arr['uuid']."')
+                                                                            AND NOT `public`";
+
     $result = $db->query("  SELECT
                                 `id`,
                                 `name`,
@@ -29,9 +33,7 @@ if($validates) {
                             FROM `". DB_TABLE ."`
                             WHERE
                                 `id`    = '".$arr['commentID']."'
-                            AND
-					        	`uuid`  = UNHEX('".$arr['uuid']."')
-                            AND NOT `public`
+                            ". $query_rule_uuid ."
                             LIMIT 1;
     ");
     if($row = mysqli_fetch_assoc($result)) {
@@ -46,8 +48,7 @@ if($validates) {
                             `date`  = now()
                         WHERE
                             `id`    = '".$arr['commentID']."'
-                        AND
-	    					`uuid`  = UNHEX('".$arr['uuid']."')
+                        ". $query_rule_uuid ."
                         LIMIT 1;
 	    ");
 

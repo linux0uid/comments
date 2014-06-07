@@ -179,7 +179,7 @@ class Comment
 			$errors['name'] = 'Пожалуйста, введите имя.';
         } elseif (mb_strlen($data['name'], 'UTF-8') < 2) {
 			$errors['name'] = 'Пожалуйста, введите имя, не меньше 2 символов.';
-        } else {
+        } elseif (!Comment::is_admin_uuid($data['uuid'], $db)) {
             Comment::validate_name($data, $errors, $db); 
         }
 		
