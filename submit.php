@@ -44,7 +44,7 @@ if($validates)
 	
 	$arr = array_map('stripslashes',$arr);
 	
-	$insertedComment = new Comment($arr);
+	$insertedComment = new Comment($arr, $arr['uuid']);
 
 	/* Вывод разметки только-что вставленного комментария: */
 

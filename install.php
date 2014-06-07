@@ -28,6 +28,16 @@ $query =  " CREATE TABLE IF NOT EXISTS `". DB_TABLE ."` (
                 SET `name`='админ';
             INSERT INTO `". DB_TABLE_STOP_WORDS ."`
                 SET `name`='консультант';
+
+            CREATE TABLE IF NOT EXISTS `". DB_TABLE_OPTIONS ."` (
+              `id` int(10) unsigned NOT NULL auto_increment,
+              `name` varchar(128) collate utf8_unicode_ci NOT NULL default '',
+              `value` varchar(128) collate utf8_unicode_ci NOT NULL default '',
+              PRIMARY KEY  (`id`)
+            ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+            INSERT INTO `". DB_TABLE_OPTIONS ."`
+                SET `name`='admin',
+                    `value`='';
 ";
 
 if($db->multi_query($query)) {

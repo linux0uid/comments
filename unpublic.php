@@ -20,21 +20,21 @@ $arr = array();
 $validates = Comment::validateAction($arr, $db);
 
 if($validates) {
-	/* Все в порядке, можно удалять: */
-	
-    $result = $db->query("  DELETE FROM `". DB_TABLE ."`
-                            WHERE `id`='". $arr['commentID'] ."'
-                                AND NOT `public`
-                            LIMIT 1;");
 
-    if($db->affected_rows == 1) {
+	/* Все в порядке, вставляем данные в базу: */
+
+    if(Comment::is_admin_uuid($arr['uuid'], $db)) {
+        $result = $db->query("  UPDATE `". DB_TABLE ."`
+                                SET `public`=false
+                                WHERE `id`='". $arr['commentID'] ."'
+                                LIMIT 1;
+                            ");
 	    echo json_encode(array('status'=>1));
     } else {
-	    echo '{"status":0,"errors":'.json_encode(array("error"=>"Вы уже не можете удалить этот комментарий!")).'}';
+	    echo '{"status":0,"errors":'.json_encode(array("error"=>"У Вас нет прав на это!")).'}';
     }
 
     unset($mysql);
-
 
 } else {
 	/* Вывод сообщений об ошибке */

@@ -3,6 +3,7 @@
 class Comment
 {
 	private $data = array();
+	private $uuid = array();
 	
     private function rdate($format, $timestamp = null, $case = 0)
     {
@@ -53,13 +54,14 @@ class Comment
     return date($format, $timestamp);
     }
 
-	public function __construct($row = null)
+	public function __construct($row = null, $uuid = null )
 	{
 		/*
 		/	Конструктор
 		*/
 
 		$this->data = $row;
+		$this->uuid = $uuid;
 	}
 	
 	public function markup(&$db)
@@ -70,6 +72,7 @@ class Comment
 		
 		// Устанавливаем псевдоним, чтобы не писать каждый раз $this->data:
 		$d = &$this->data;
+        $uuid = &$this->uuid;
 		
 		$link_open = '';
 		$link_close = '';
@@ -83,18 +86,41 @@ class Comment
         $result = $db->query("SELECT COUNT(*) FROM `". DB_TABLE ."` WHERE `id`='". $d['id'] ."' AND `uuid`=UNHEX('". $d['uuid'] ."') AND NOT `public` LIMIT 1;");
         $result = $result->fetch_array();
 
-        if ($result[0] == 1) {
-            $controll_button = '<div class="controll-button">
-                                    <button class="edit" onclick="edit_comment('. $d['id'] .')" >
-                                        <img src="http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/img/edit.png" />
-                                        <span>Редактировать</span>
-                                    </button>
-                                    <button class="delete" onclick="delete_comment('. $d['id'] .')" >
-                                        <img src="http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/img/delete.png" />
-                                        <span>Удалить</span>
-                                    </button>
-                                </div>';
+        $controll_button = false;
+        $controll_button_start = '  <div class="controll-button">';
+
+        if(Comment::is_admin_uuid($uuid, $db)) {
+
+            if($d['public']) {
+                $controll_button_admin ='<button class="unpublic" onclick="unpublic_comment('. $d['id'] .')" >
+                                            <img src="http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/img/unpublic.png" />
+                                            <span>Скрыть</span>
+                                        </button>';
+            } else {
+                $controll_button_admin ='<button class="public" onclick="public_comment('. $d['id'] .')" >
+                                            <img src="http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/img/public.png" />
+                                            <span>Публиковать</span>
+                                        </button>';
+            }
+            $controll_button = true;
+            $result[0] = 1;
         }
+
+        if ($result[0] == 1) {
+            $controll_button_user  = '  <button class="edit" onclick="edit_comment('. $d['id'] .')" >
+                                            <img src="http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/img/edit.png" />
+                                            <span>Редактировать</span>
+                                        </button>
+                                        <button class="delete" onclick="delete_comment('. $d['id'] .')" >
+                                            <img src="http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/img/delete.png" />
+                                            <span>Удалить</span>
+                                        </button>';
+            $controll_button = true;
+        }
+
+        $controll_button_end = '</div>';
+
+        $controll_button = $controll_button ? $controll_button_start . $controll_button_admin . $controll_button_user . $controll_button_end : '';
 
 		return '
 
@@ -267,7 +293,7 @@ class Comment
 		
 	}
 
-	public static function validateDelete(&$arr, &$db)
+	public static function validateAction(&$arr, &$db)
 	{
 		/*
 		/	Данный метод используется для проверки данных отправляемых через AJAX.
@@ -346,7 +372,23 @@ class Comment
 		return $str;
 	}
 
-    private static function validateUuid(&$data, &$errors)
+    public static function is_admin()
+    {
+        $adminkey = $_GET['adminkey'];
+
+        if(md5($adminkey) === ADMIN_KEY_MD5)
+            return true;
+        return false;
+    }
+
+    public static function is_admin_uuid($uuid, &$db)
+    {
+        if($uuid === Comment::getOption('admin', $db))
+            return true;
+        return false;
+    }
+
+    public static function validateUuid(&$data, &$errors)
     {
         $uu = explode("$", $_COOKIE['id']);
         $uuid = $uu[0];
@@ -376,7 +418,7 @@ class Comment
     {
         if(!($data['commentID'] = filter_input(INPUT_POST,'commentID',FILTER_VALIDATE_INT))) {
 		    $errors['commentID'] = 'Пожалуйста, введите правильный commentID.';
-        } else {
+        } elseif(!Comment::is_admin_uuid($data['uuid'], $db)) {
             $result = $db->query("SELECT COUNT(*) FROM `". DB_TABLE ."` WHERE `id`='". $data['commentID'] ."' AND `uuid`=UNHEX('". $data['uuid'] ."');");
             $result = $result->fetch_array();
             if($result[0] != 1) {
@@ -384,6 +426,28 @@ class Comment
             }
         }
     }
+
+    public static function setOption($option_name, $option_value, &$db)
+    {
+        $option_value = mysqli_escape_string($db, $option_value);
+
+        $db->query("UPDATE `". DB_TABLE_OPTIONS ."`
+                    SET `value`='". $option_value ."'
+                    WHERE `name`='". $option_name ."'
+                    LIMIT 1;
+        ");
+    }
 		
+    public static function getOption($option_name, &$db)
+    {
+        $result = $db->query("  SELECT `value`
+                                FROM `". DB_TABLE_OPTIONS ."`
+                                WHERE `name`='". $option_name ."'
+                                LIMIT 1;
+        ");
+        $row = $result->fetch_row();
+
+        return $row[0];
+    }
 }
 

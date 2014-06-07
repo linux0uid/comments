@@ -317,7 +317,7 @@ function cancel_comment(commentID){
     jQuery(controllButton +" .cancel").remove();
     jQuery(controllButton +" .delete").before(function(){
         var buttonCancel = '<button class="edit" onclick="edit_comment(\'' +commentID +'\')" >' +
-                                '<img style="padding: 0 2px;" src="http://<?php echo $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR; ?>/img/edit.png" />' +
+                                '<img style="padding: 0 2px 0 0;" src="http://<?php echo $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR; ?>/img/edit.png" />' +
                                 '<span>Редактировать</span>' +
                            '</button>';
         return buttonCancel;

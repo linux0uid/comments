@@ -20,13 +20,29 @@ $arr = array();
 $validates = Comment::validateMore($arr, $db);
 
 if($validates) {
-	/* Все в порядке, вставляем данные в базу: */
 	
-    $result = $db->query("SELECT `id`, `name`, `body`, `email`, `uuid`, `public`, `date` FROM `". DB_TABLE ."` WHERE `url`='". $arr['url'] ."' AND (`public` OR `uuid`=UNHEX('". $arr['uuid'] ."')) ORDER BY id ASC LIMIT ". $arr['startFrom'] .", ". AJAX_QUANTITY);
+    if(Comment::is_admin_uuid($arr['uuid'], $db)) {
+        $query = "  SELECT
+                        `id`, `name`, `body`, `email`, `uuid`, `public`, `date`
+                    FROM `". DB_TABLE ."`
+                    WHERE `url`='". $arr['url'] ."'
+                    ORDER BY id ASC
+                    LIMIT ". $arr['startFrom'] .", ". AJAX_QUANTITY;
+    } else {
+        $query = "  SELECT
+                        `id`, `name`, `body`, `email`, `uuid`, `public`, `date`
+                    FROM `". DB_TABLE ."`
+                    WHERE `url`='". $arr['url'] ."'
+                        AND (`public` OR `uuid`=UNHEX('". $arr['uuid'] ."'))
+                    ORDER BY id ASC
+                    LIMIT ". $arr['startFrom'] .", ". AJAX_QUANTITY;
+    }
+
+    $result = $db->query($query);
 
     while($row = mysqli_fetch_assoc($result)) {
         $row['uuid'] = bin2hex($row['uuid']);
-    	$comments[] = new Comment($row);
+    	$comments[] = new Comment($row, $arr['uuid']);
     }
     $result->free();
 
