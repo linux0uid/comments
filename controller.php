@@ -24,7 +24,7 @@ if(Comment::is_admin()) {
     $url = 'http://' . $_SERVER['SERVER_NAME'] . $url; 
     $url = preg_replace('/^([^?]+)(\?.*?)?(#.*)?$/', '$1$3', $url);
 
-    header("Location: ". $url);
+    echo '<meta http-equiv="refresh" content="0; url='.$url.'">';
 }
 
 

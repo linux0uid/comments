@@ -333,7 +333,7 @@ class Comment
         $result = $db->query("SELECT `name` FROM `". DB_TABLE_STOP_WORDS ."`;");
 
         while($row = $result->fetch_row()) {
-            if (stripos($data['name'], $row[0]) !== false) {
+            if (mb_stripos($data['name'], $row[0], 0, 'UTF-8') !== false) {
                 $errors['name'] = 'Вы не можете использовать "'. $row[0] .'" в своем имени.';
             }
         }
