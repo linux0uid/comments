@@ -15,8 +15,17 @@ $data	= array();
 
 Comment::validateUuid($data, $errors);
 
-if(Comment::is_admin())
+if(Comment::is_admin()) {
+
     Comment::setOption('admin', $data['uuid'], $db);
+    //
+    // удаление GET-параметров из URL
+    $url = $_SERVER['REQUEST_URI'];
+    $url = 'http://' . $_SERVER['SERVER_NAME'] . $url; 
+    $url = preg_replace('/^([^?]+)(\?.*?)?(#.*)?$/', '$1$3', $url);
+
+    header("Location: ". $url);
+}
 
 
 // Вывод шаблона
