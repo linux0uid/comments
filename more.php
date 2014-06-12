@@ -23,14 +23,14 @@ if($validates) {
 	
     if(Comment::is_admin_uuid($arr['uuid'], $db)) {
         $query = "  SELECT
-                        `id`, `name`, `body`, `email`, `uuid`, `public`, `date`
+                        `id`, `name`, `body`, `email`, `uuid`, `public`, `date`, `ip`
                     FROM `". DB_TABLE ."`
                     WHERE `url`='". $arr['url'] ."'
                     ORDER BY id ASC
                     LIMIT ". $arr['startFrom'] .", ". AJAX_QUANTITY;
     } else {
         $query = "  SELECT
-                        `id`, `name`, `body`, `email`, `uuid`, `public`, `date`
+                        `id`, `name`, `body`, `email`, `uuid`, `public`, `date`, `ip`
                     FROM `". DB_TABLE ."`
                     WHERE `url`='". $arr['url'] ."'
                         AND (`public` OR `uuid`=UNHEX('". $arr['uuid'] ."'))

@@ -89,6 +89,8 @@ class Comment
         $controll_button = false;
         $controll_button_start = '  <div class="controll-button">';
 
+        $ip='';
+
         if(Comment::is_admin_uuid($uuid, $db)) {
 
             if($d['public']) {
@@ -104,6 +106,7 @@ class Comment
             }
             $controll_button = true;
             $result[0] = 1;
+            $ip = '<div id="ip">IP: ' . $d['ip'] . '</div>';
         }
 
         if ($result[0] == 1) {
@@ -131,8 +134,9 @@ class Comment
 					'.$link_close.'
 				</div>
 				
-				<div class="name">'.$link_open.$d['name'].$link_close.'</div>
-				<div class="date" title="Добавлен '. $this->rdate('d F Y \в H:i', $d['date'], 1) .'">'. $this->rdate('d F Y', $d['date'], 1) .'</div>
+                <div class="name">'.$link_open.$d['name'].$link_close.'</div>'
+                . $ip .
+				'<div class="date" title="Добавлен '. $this->rdate('d F Y \в H:i', $d['date'], 1) .'">'. $this->rdate('d F Y', $d['date'], 1) .'</div>
                 <div class="content">'.htmlspecialchars_decode($d['body']).'</div>'.
                 $controll_button .
 			'</div>

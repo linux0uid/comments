@@ -73,6 +73,14 @@
 	color:#ccc;
 }
 
+.comment #ip{
+    font-size: 10px;
+    margin-bottom: 10px;
+    margin-top: -10px;
+    text-align: right;
+	color:#bbb;
+}
+
 .comment .date{
 	font-size:10px;
 	padding:6px 0;
