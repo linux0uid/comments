@@ -7,9 +7,17 @@
 $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $hash = md5($url . URL_SOLL);
 ?>
+<?php $exit =  '';
+?>
 
 <script type="text/javascript">
 
+jQuery(".CommentContainer #addCommentContainer input#submit").after(function(){
+    var result = '<a href="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/exit.php"; ?>" class="exit" title="Выйти из админки">'+
+                    '<span>Выйти</span>'+
+                '</a>';
+    return result;
+});
 var publicInProgress = false;
 
 function public_comment(commentID) {
