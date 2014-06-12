@@ -196,6 +196,7 @@ jQuery(document).ready(function($){
 				/*/
 
                 data = jQuery.parseHTML(msg.html);
+                jQuery('.CommentContainer .CommentMore').remove();
 				jQuery(data).hide().insertBefore('#addCommentContainer').slideDown();
 				jQuery('#commentsBody').val('');
 			}

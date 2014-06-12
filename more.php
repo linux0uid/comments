@@ -47,8 +47,10 @@ if($validates) {
     $result->free();
 
     $insertedComments = '';
-    foreach($comments as $c){
-    	$insertedComments .= $c->markup($db);
+    if($comments) {
+        foreach($comments as $c){
+        	$insertedComments .= $c->markup($db);
+        }
     }
     unset($mysql);
 	/* Вывод разметки только-что вставленного комментария: */

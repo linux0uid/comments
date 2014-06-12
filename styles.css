@@ -103,7 +103,8 @@
     font-family: sans-serif;
     font-size: 14px;
     font-weight: 700;
-    letter-spacing: -0.04em;
+    white-space:nowrap;
+    letter-spacing: -0.06em;
 }
 .CommentMore img {
     vertical-align: middle;
@@ -129,8 +130,14 @@
 .exit {
     float: right;
     margin-right: 15px;
-    margin-top: 5px;
+    margin-top: 10px;
     position: relative;
+}
+.exit span {
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1794D1;
 }
 
 label{
@@ -197,6 +204,7 @@ text-transform: capitalize;
 }
 .controll-button button span {
 font-size: 12px;
+color: #3D3D3D;
 }
 
 .controll-button .delete {
