@@ -24,26 +24,30 @@ jQuery( document ).ready( function() {
 <link rel="stylesheet" type="text/css" href="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/styles.css"; ?>" />
 
 <div class="CommentContainer">
-<div id="addCommentContainer">
-	<p>Добавить комментарий</p>
-	<form id="addCommentForm" method="post" action="">
-    	<div>
-        	<label for="name">Имя</label>
-        	<input type="text" name="name" id="name" />
-            
-            <label for="email">Email</label>
-            <input type="hidden" name="email" id="email" />
-            <input type="text" name="mail" id="email" />
-            
-            <label for="body">Содержание комментария</label>
-            <textarea name="body" id="commentsBody" cols="20" rows="5"></textarea>
-            
-            <input type="hidden" name="url" value="<?php echo $url; ?>" />
-            <input type="hidden" name="hash" value="<?php echo $hash; ?>" />
-            <input type="submit" id="submit" value="Отправить" />
-        </div>
-    </form>
-</div>
+    <div class="CommentMore comment">
+        <img src="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/img/preloader.gif"; ?>" />
+        Происходит загрузка комментариев...
+    </div>
+    <div id="addCommentContainer">
+    	<p>Добавить комментарий</p>
+    	<form id="addCommentForm" method="post" action="">
+        	<div>
+            	<label for="name">Имя</label>
+            	<input type="text" name="name" id="name" />
+                
+                <label for="email">Email</label>
+                <input type="hidden" name="email" id="email" />
+                <input type="text" name="mail" id="email" />
+                
+                <label for="body">Содержание комментария</label>
+                <textarea name="body" id="commentsBody" cols="20" rows="5"></textarea>
+                
+                <input type="hidden" name="url" value="<?php echo $url; ?>" />
+                <input type="hidden" name="hash" value="<?php echo $hash; ?>" />
+                <input type="submit" id="submit" value="Отправить" />
+            </div>
+        </form>
+    </div>
 </div>
 
 <script type="text/javascript" src="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/evercookie/evercookie.js"; ?>"></script>
@@ -113,8 +117,10 @@ jQuery(document).ready(function($){
                     inProgress = false;
                     // Увеличиваем на 10 порядковый номер статьи, с которой надо начинать выборку из базы
                     startFrom += <?php echo AJAX_QUANTITY; ?>;
+                    jQuery('.CommentContainer .CommentMore').remove();
                 } else {
                     moreComments = data.status;
+                    jQuery('.CommentContainer .CommentMore').empty().append('Ещё никто не оставил комментарий к этой записи.');
                 }
             });
         }
