@@ -1,10 +1,21 @@
 <?php
 
+/**
+ * Class: Comment
+ *
+ */
 class Comment
 {
 	private $data = array();
 	private $uuid = array();
 	
+    /**
+     * rdate
+     *
+     * @param mixed $format
+     * @param mixed $timestamp
+     * @param int $case
+     */
     private function rdate($format, $timestamp = null, $case = 0)
     {
         if ( $timestamp === null )
@@ -54,16 +65,23 @@ class Comment
     return date($format, $timestamp);
     }
 
+	/**
+	 * __construct
+	 *
+	 * @param mixed $row
+	 * @param mixed $uuid
+	 */
 	public function __construct($row = null, $uuid = null )
 	{
-		/*
-		/	Конструктор
-		*/
-
 		$this->data = $row;
 		$this->uuid = $uuid;
 	}
 	
+	/**
+	 * markup
+	 *
+	 * @param mixed $db
+	 */
 	public function markup(&$db)
 	{
 		/*
@@ -83,7 +101,12 @@ class Comment
 		// Нужно для установки изображения по умолчанию:
 		$url = 'http://'. $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/img/default_avatar.gif';
 		
-        $result = $db->query("SELECT COUNT(*) FROM `". DB_TABLE ."` WHERE `id`='". $d['id'] ."' AND `uuid`=UNHEX('". $d['uuid'] ."') AND NOT `public` LIMIT 1;");
+		$result = $db->query("	SELECT COUNT(*)
+								FROM `". DB_TABLE ."`
+								WHERE `id`='". $d['id'] ."'
+									AND `uuid`=UNHEX('". $d['uuid'] ."')
+									AND NOT `public`
+								LIMIT 1;");
         $result = $result->fetch_array();
 
         $controll_button = false;
@@ -143,6 +166,12 @@ class Comment
 		';
 	}
 	
+	/**
+	 * validate
+	 *
+	 * @param mixed $arr
+	 * @param mixed $db
+	 */
 	public static function validate(&$arr, &$db)
 	{
 		/*
@@ -209,6 +238,12 @@ class Comment
 		
 	}
 
+	/**
+	 * validateEdit
+	 *
+	 * @param mixed $arr
+	 * @param mixed $db
+	 */
 	public static function validateEdit(&$arr, &$db)
 	{
 		/*
@@ -254,6 +289,12 @@ class Comment
 		
 	}
 
+	/**
+	 * validateMore
+	 *
+	 * @param mixed $arr
+	 * @param mixed $db
+	 */
 	public static function validateMore(&$arr, &$db)
 	{
 		/*
@@ -297,6 +338,12 @@ class Comment
 		
 	}
 
+	/**
+	 * validateAction
+	 *
+	 * @param mixed $arr
+	 * @param mixed $db
+	 */
 	public static function validateAction(&$arr, &$db)
 	{
 		/*
@@ -332,6 +379,13 @@ class Comment
 		
 	}
 
+	/**
+	 * validate_name
+	 *
+	 * @param mixed $data
+	 * @param mixed $errors
+	 * @param mixed $db
+	 */
 	private static function validate_name(&$data, &$errors, &$db)
 	{
         $result = $db->query("SELECT `name` FROM `". DB_TABLE_STOP_WORDS ."`;");
@@ -346,6 +400,11 @@ class Comment
 		
 	}
 
+	/**
+	 * validate_body
+	 *
+	 * @param mixed $str
+	 */
 	private static function validate_body($str)
 	{
         $tags = '<a><br><em><p><strong><span>';
@@ -354,6 +413,12 @@ class Comment
 		return $str;
 	}
 
+	/**
+	 * validate_text
+	 *
+	 * @param mixed $str
+	 * @param string $tags
+	 */
 	private static function validate_text($str, $tags = '')
 	{
 		/*
@@ -376,6 +441,10 @@ class Comment
 		return $str;
 	}
 
+    /**
+     * is_admin
+     *
+     */
     public static function is_admin()
     {
         $adminkey = $_GET['adminkey'];
@@ -385,6 +454,12 @@ class Comment
         return false;
     }
 
+    /**
+     * is_admin_uuid
+     *
+     * @param mixed $uuid
+     * @param mixed $db
+     */
     public static function is_admin_uuid($uuid, &$db)
     {
         if($uuid === Comment::getOption('admin', $db))
@@ -392,6 +467,12 @@ class Comment
         return false;
     }
 
+    /**
+     * validateUuid
+     *
+     * @param mixed $data
+     * @param mixed $errors
+     */
     public static function validateUuid(&$data, &$errors)
     {
         $uu = explode("$", $_COOKIE['id']);
@@ -405,6 +486,12 @@ class Comment
         }
     }
 
+    /**
+     * validateUrl
+     *
+     * @param mixed $data
+     * @param mixed $errors
+     */
     private static function validateUrl(&$data, &$errors)
     {
 		if(!($data['url'] = filter_input(INPUT_POST,'url',FILTER_VALIDATE_URL))) { 
@@ -418,6 +505,13 @@ class Comment
         }
     }
 
+    /**
+     * validateCommentID
+     *
+     * @param mixed $data
+     * @param mixed $errors
+     * @param mixed $db
+     */
     private static function validateCommentID(&$data, &$errors, &$db)
     {
         if(!($data['commentID'] = filter_input(INPUT_POST,'commentID',FILTER_VALIDATE_INT))) {
@@ -431,6 +525,13 @@ class Comment
         }
     }
 
+    /**
+     * setOption
+     *
+     * @param mixed $option_name
+     * @param mixed $option_value
+     * @param mixed $db
+     */
     public static function setOption($option_name, $option_value, &$db)
     {
         $option_value = mysqli_escape_string($db, $option_value);
@@ -442,6 +543,12 @@ class Comment
         ");
     }
 		
+    /**
+     * getOption
+     *
+     * @param mixed $option_name
+     * @param mixed $db
+     */
     public static function getOption($option_name, &$db)
     {
         $result = $db->query("  SELECT `value`
