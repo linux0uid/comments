@@ -1,14 +1,14 @@
-==Система комментирования для сайта
+## Система комментирования для сайта
 
 
-===УСТАНОВКА
+### УСТАНОВКА
 
 1. Распакуйте содержимое архива в корневую папку на сайт.
 2. В файле config.php настройте доступ к вашей базе данных.
 3. Запустите в браузере файл http://{ваш_сайт}/comments/install.php
 4. Встройте в страницу своего сайта, в том месте где необходимо отображение комментариев, следующий код:
 
-	<?php require implode(DIRECTORY_SEPARATOR, array($_SERVER['DOCUMENT_ROOT'], "comments", "controller.php")); ?>
+    <?php require implode(DIRECTORY_SEPARATOR, array($_SERVER['DOCUMENT_ROOT'], "comments", "controller.php")); ?>
 
 5. Для редактирования комментариев необходимо зайти с на любую страницу сайта, где подключена система комментирования, с ключем ?adminkey=key. (Пр. ..comments/demo/demo.php?adminkey=nABVYU2ubCdHuwNXuLYnI52iXar9lT)
 6. С ключом adminkey зайти нужно только один раз. Дальше редактировать комментарии можно на любой странице сайта.
@@ -16,7 +16,7 @@
 Внимание! Не сам ключ, а его хеш md5.
 
 
-===License
+### License
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
