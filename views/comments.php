@@ -21,7 +21,7 @@ jQuery( document ).ready( function() {
 } );
 } );
 </script>
-<link rel="stylesheet" type="text/css" href="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/styles.css"; ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo 'http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/styles.css'; ?>" />
 
 <div class="CommentContainer">
     <div class="CommentMore comment">
@@ -50,8 +50,8 @@ jQuery( document ).ready( function() {
     </div>
 </div>
 
-<script type="text/javascript" src="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/evercookie/evercookie.js"; ?>"></script>
-<script type="text/javascript" src="<?php echo "http://" . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . "/evercookie/swfobject.js"; ?>"></script>
+<script type="text/javascript" src="<?php echo 'http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/evercookie/js/swfobject-2.2.min.js'; ?>"></script>
+<script type="text/javascript" src="<?php echo 'http://' . $_SERVER['SERVER_NAME'] . '/' . ROOT_DIR . '/evercookie/js/evercookie.js'; ?>"></script>
 <script type="text/javascript">
     //
     // retrieve a cookie called "id" (simply)
@@ -154,7 +154,7 @@ jQuery(document).ready(function($){
                 getComment();
             });
         }
-        if(cookID === 'null') {
+        if(typeof cookID === 'undefined') {
             getUuid();
         } else {
             getComment();

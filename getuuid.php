@@ -1,8 +1,7 @@
 <?php
-define (PATH_ROOT, dirname(__FILE__));
 
 // Сообщение об ошибке:
-error_reporting(E_ALL^E_NOTICE);
+//error_reporting(E_ALL^E_NOTICE);
 
 include_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'config.php';
 //include_once implode(DIRECTORY_SEPARATOR, array(PATH_ROOT, "include", "comment.class.php"));
